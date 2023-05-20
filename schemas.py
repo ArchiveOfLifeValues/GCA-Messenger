@@ -3,6 +3,7 @@ import uuid
 
 from fastapi_users import schemas
 from pydantic import BaseModel
+from fastapi import UploadFile
 
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
@@ -17,27 +18,28 @@ class UserUpdate(schemas.BaseUserUpdate):
     pass
 
 
-class Message(BaseModel):
-    message: str
-    sent_at: datetime.datetime
+class UserInfo(BaseModel):
+    username: str
+    name: str
+    bio: str
 
 
-class CreateMessage(Message):
+class GetUserInfo(UserInfo):
+    id: int
+    user_id: str
     pass
 
 
-class GetMessage(Message):
-    id: int
+class CreateUserInfo(UserInfo):
+    pass
+
+
+class UpdateUserInfo(UserInfo):
+    pass
 
 
 class Chat(BaseModel):
     id: int
-
-
-class ChatMessage(BaseModel):
-    id: int
-    message_id: int
-    chat_id: int
 
 
 class ChatMember(BaseModel):
@@ -51,6 +53,21 @@ class CreateChatMember(ChatMember):
 
 class GetChatMember(ChatMember):
     id: int
+
+
+class ChatMessage(BaseModel):
+    chat_id: int
+    message: str
+    sent_at: datetime.datetime
+
+
+class CreateChatMessage(ChatMessage):
+    pass
+
+
+class GetChatMessage(ChatMessage):
+    id: int
+    sender_id: str
 
 
 class Friend(BaseModel):

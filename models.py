@@ -15,6 +15,16 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
 
 
+class UserInfo(Base):
+    __tablename__ = "user_info"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(CHAR(32), ForeignKey("user.id"))
+    name = Column(CHAR(32))
+    username = Column(CHAR(32))
+    bio = Column(CHAR(32))
+
+
 class Chat(Base):
     __tablename__ = "chat"
 
@@ -22,29 +32,21 @@ class Chat(Base):
 
 
 class ChatMember(Base):
-    __tablename__ = "chat_members"
+    __tablename__ = "chat_member"
 
     id = Column(Integer, primary_key=True, index=True)
     chat_id = Column(Integer, ForeignKey("chat.id"))
     user_id = Column(CHAR(32), ForeignKey("user.id"))
-
-
-class Message(Base):
-    __tablename__ = "message"
-
-    id = Column(Integer, primary_key=True, index=True)
-    message = Column(String)
-    sent_at = Column(DateTime)
-    sender_id = Column(CHAR(32))
 
 
 class ChatMessage(Base):
     __tablename__ = "chat_message"
 
     id = Column(Integer, primary_key=True, index=True)
-    message_id = Column(Integer, ForeignKey("message.id"))
-    user_id = Column(CHAR(32), ForeignKey("user.id"))
     chat_id = Column(Integer, ForeignKey("chat.id"))
+    message = Column(String)
+    sent_at = Column(DateTime)
+    sender_id = Column(CHAR(32))
 
 
 class Friend(Base):
