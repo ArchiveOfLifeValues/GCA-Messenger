@@ -4,7 +4,7 @@ from database import create_db_and_tables
 from schemas import UserCreate, UserRead, UserUpdate
 from users import auth_backend, current_active_user, fastapi_users
 from models import User
-from router import chat_router, friend_router
+from router import chat_router, friend_router, user_router
 
 app = FastAPI()
 
@@ -33,6 +33,7 @@ app.include_router(
 )
 app.include_router(chat_router, tags=['chat'])
 app.include_router(friend_router, tags=['friend'])
+app.include_router(user_router, tags=['user'])
 
 
 @app.get("/authenticated-route")
@@ -42,5 +43,4 @@ async def authenticated_route(user: User = Depends(current_active_user)):
 
 @app.on_event("startup")
 async def on_startup():
-    # Not needed if you setup a migration system like Alembic
     await create_db_and_tables()
