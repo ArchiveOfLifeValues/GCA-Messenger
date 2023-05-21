@@ -25,8 +25,6 @@ class UserInfo(BaseModel):
 
 
 class GetUserInfo(UserInfo):
-    id: int
-    user_id: str
     pass
 
 
