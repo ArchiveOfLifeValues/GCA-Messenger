@@ -19,16 +19,17 @@ async def create_user_info(db: Session, user_id: str, user_info: schemas.CreateU
 
 async def get_user_info(db: Session, user_id: str):
     table = models.UserInfo.__table__
-    stmt = select(table).where(table.c.user_id == user_id)
+    stmt = select(table).where(table.c.user_id == str(user_id))
     result = await db.execute(stmt)
-    row = result.first() if result else None
+    row = result.first()
     return row
 
 
 async def update_user_info(db: Session, user_id: str, user_info: schemas.UpdateUserInfo):
     table = models.UserInfo.__table__
-    stmt = update(table).where(table.c.user_id == user_id).values(name=user_info.name, username=user_info.username,
-                                                                  bio=user_info.bio)
+    stmt = update(table).where(table.c.user_id == str(user_id)).values(name=user_info.name,
+                                                                       username=user_info.username,
+                                                                       bio=user_info.bio, )
     await db.execute(stmt)
     await db.commit()
 
@@ -61,7 +62,7 @@ async def get_chat_members(db: Session, chat_id: int):
 
 async def get_user_chats(db: Session, user_id: str):
     table = models.ChatMember.__table__
-    stmt = select(table).where(table.c.user_id == str(user_id))
+    stmt = select(table).where(table.c.user_id == user_id)
     user_chats = await db.execute(stmt)
     return user_chats.all()
 
@@ -92,7 +93,7 @@ async def get_chat_messages(db: Session, chat_id: int):
 
 
 async def add_message(db: Session, msg: schemas.CreateChatMessage, user_id: str) -> int:
-    table = models.Message.__table__
+    table = models.ChatMessage.__table__
     stmt = insert(table).values(message=msg.message, sent_at=msg.sent_at, sender_id=str(user_id))
     result = await db.execute(stmt)
     await db.commit()
@@ -100,7 +101,8 @@ async def add_message(db: Session, msg: schemas.CreateChatMessage, user_id: str)
 
 
 async def add_friend(db: Session, user_1_id: str, user_2_id: str):
-    stmt = insert(models.Friend.__table__).values(user_1_id=user_1_id, user_2_id=user_2_id)
+    table = models.Friend.__table__
+    stmt = insert(table).values(user_1_id=user_1_id, user_2_id=user_2_id)
     result = await db.execute(stmt)
     await db.commit()
     return result.inserted_primary_key[0]
@@ -119,7 +121,8 @@ async def get_friends(db: Session, user_id: str):
 
 
 async def delete_friend(db: Session, user_1_id: str, user_2_id: str):
-    stmt = delete(models.Friend.__table__).where(
+    table = models.Friend.__table__
+    stmt = delete(table).where(
         and_(
             models.Friend.user_1_id == str(user_1_id),
             models.Friend.user_2_id == str(user_2_id)

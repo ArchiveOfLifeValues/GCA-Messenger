@@ -46,9 +46,13 @@ async def set_user_photo(user=Depends(current_active_user), photo: UploadFile = 
 async def get_user_info(user_id: str, db=Depends(get_async_session)):
     try:
         db_user_info = await crud.get_user_info(db, user_id)
+
         if db_user_info is None:
             raise HTTPException(status_code=404, detail="User info not found")
-        return db_user_info
+
+        return schemas.GetUserInfo(username=db_user_info.username,
+                                   name=db_user_info.name,
+                                   bio=db_user_info.bio)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -59,5 +63,16 @@ async def set_user_info(user_info: schemas.CreateUserInfo, user=Depends(current_
     try:
         await crud.create_user_info(db, user.id, user_info)
         return "User info successfully setted"
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@user_router.patch("/info/update")
+async def update_user_info(user_info: schemas.UpdateUserInfo,
+                           user=Depends(current_active_user),
+                           db=Depends(get_async_session),):
+    try:
+        await crud.update_user_info(db, user.id, user_info)
+        return "User info successfully updated"
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
