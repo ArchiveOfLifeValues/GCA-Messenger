@@ -1,6 +1,9 @@
-from os import getenv
-from dotenv import load_dotenv
+from os import getenv  # Импорт функции getenv из модуля os для получения переменных среды
+from dotenv import load_dotenv # Импорт функции load_dotenv из модуля dotenv для загрузки переменных среды из файла .env
 
-load_dotenv()
+load_dotenv() # Загрузка переменных среды из файла .env в корневой каталог проекта
 
 SECRET = getenv("SECRET")
+# Получение значения переменной среды "SECRET" с помощью функции getenv из модуля os.
+# Это позволяет получить значение переменной среды, которое было установлено в файле .env.
+# Полученное значение присваивается переменной SECRET.

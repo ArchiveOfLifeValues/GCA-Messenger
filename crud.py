@@ -17,6 +17,13 @@ async def create_user_info(db: Session, user_id: str, user_info: schemas.CreateU
     await db.commit()
 
 
+async def is_user_info_exist(db: Session, user_id: str):
+    table = models.UserInfo.__table__
+    stmt = select(table).where(table.c.user_id == str(user_id))
+    result = await db.execute(stmt)
+    return len(result.all()) > 0
+
+
 async def get_user_info(db: Session, user_id: str):
     table = models.UserInfo.__table__
     stmt = select(table).where(table.c.user_id == str(user_id))
@@ -62,7 +69,7 @@ async def get_chat_members(db: Session, chat_id: int):
 
 async def get_user_chats(db: Session, user_id: str):
     table = models.ChatMember.__table__
-    stmt = select(table).where(table.c.user_id == user_id)
+    stmt = select(table).where(table.c.user_id == str(user_id))
     user_chats = await db.execute(stmt)
     return user_chats.all()
 
@@ -77,7 +84,25 @@ async def add_chat_message(db: Session, chat_id: int, message: str, sent_at: dat
 
 async def is_user_exist(db: Session, user_id: str):
     table = models.User.__table__
-    stmt = select(table).where(table.c.id == user_id)
+    stmt = select(table).where(table.c.id == str(user_id))
+    result = await db.execute(stmt)
+    result = result.all()
+    return len(result) != 0
+
+
+async def is_chat_exist(db: Session, chat_id: int):
+    table = models.Chat.__table__
+    stmt = select(table).where(table.c.id == chat_id)
+    result = await db.execute(stmt)
+    result = result.all()
+    if len(result) == 0:
+        return False
+    return True
+
+
+async def is_chat_member(db: Session, user_id: str, chat_id: int):
+    table = models.ChatMember.__table__
+    stmt = select(table).where(and_(table.c.user_id == str(user_id), table.c.chat_id == chat_id))
     result = await db.execute(stmt)
     result = result.all()
     if len(result) == 0:
