@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # messenger
 
 A new Flutter project.
@@ -16,3 +17,6 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 # GCA-Messenger
 
+=======
+# GCA-Messenger
+>>>>>>> b541d00e13ff8cf93ae15024a862a2990878f1cb
