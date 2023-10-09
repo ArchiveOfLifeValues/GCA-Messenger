@@ -42,3 +42,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+.idea/dataSources.local.xml
+.idea/dataSources/94b8dcb6-351b-49f7-957a-e7a75cbf2e27.xml
